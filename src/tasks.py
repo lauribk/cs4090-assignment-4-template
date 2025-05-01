@@ -5,6 +5,31 @@ from datetime import datetime
 # File path for task storage
 DEFAULT_TASKS_FILE = "tasks.json"
 
+def sort_tasks_by_date(tasks):
+    return sorted(tasks, key=lambda task: datetime.strptime(task["due_date"], "%Y-%m-%d"))
+
+def flag_tasks(tasks, task_id):
+    for task in tasks:
+        if task["id"] == task_id:
+            task["flagged"] =  not task["flagged"]
+            return task
+    return None
+
+def edit_task(tasks, task_id, updates):
+    for task in tasks:
+        if task["id"] == task_id:
+            task["title"] = updates["title"]
+            task["priority"] = updates["priority"]
+            task["category"] = updates["category"]
+            task["due_date"] = updates["due_date"]
+            if "description" in updates:
+                if updates["description"]:
+                    task["description"] = updates["description"]
+                else:
+                    task.pop("description", None)
+            return task
+    return None
+
 def load_tasks(file_path=DEFAULT_TASKS_FILE):
     """
     Load tasks from a JSON file.
